@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NFC Сайт</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: black;
+            text-align: center;
+        }
+        .my-image {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <img src="my-image.jpg" alt="Моя картинка" class="my-image">
+    
+    <audio id="myAudio" loop>
+        <source src="my-sound.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        var audio = document.getElementById('myAudio');
+        audio.volume = 1.0;
+        
+        // Пытаемся запустить звук сразу
+        audio.play().catch(function(error) {
+            console.log('Нужно нажать на экран для звука');
+        });
+        
+        // Запускаем звук при любом клике на странице
+        document.body.addEventListener('click', function() {
+            audio.play();
+        });
+    </script>
+</body>
+</html>
