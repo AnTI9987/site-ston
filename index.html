@@ -5,19 +5,32 @@
     <style>
         body {
             margin: 0;
-            padding: 20px;
+            padding: 0;
             background: black;
             text-align: center;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
         }
         .my-image {
             width: 100%;
             max-width: 500px;
             height: auto;
         }
+        .loading {
+            color: white;
+            font-size: 16px;
+            margin-top: 10px;
+            font-family: Arial, sans-serif;
+        }
     </style>
 </head>
 <body>
     <img src="my-image.jpg" alt="Моя картинка" class="my-image">
+    <div class="loading" id="status">Загрузка...</div>
     
     <audio id="myAudio" loop>
         <source src="my-sound.mp3" type="audio/mpeg">
@@ -25,16 +38,53 @@
 
     <script>
         var audio = document.getElementById('myAudio');
+        var statusText = document.getElementById('status');
         audio.volume = 1.0;
         
-        // Пытаемся запустить звук сразу
-        audio.play().catch(function(error) {
-            console.log('Нужно нажать на экран для звука');
+        // Пытаемся запустить звук сразу при загрузке
+        function tryAutoPlay() {
+            audio.play().then(function() {
+                statusText.innerHTML = "Звук воспроизводится ✅";
+                statusText.style.color = "#00ff00";
+            }).catch(function(error) {
+                statusText.innerHTML = "Нажмите на экран для включения звука 🔈";
+                statusText.style.color = "#ff4444";
+            });
+        }
+        
+        // Несколько попыток автозапуска
+        window.addEventListener('load', function() {
+            // Первая попытка сразу
+            tryAutoPlay();
+            
+            // Вторая попытка через 500ms
+            setTimeout(tryAutoPlay, 500);
+            
+            // Третья попытка через 1000ms
+            setTimeout(tryAutoPlay, 1000);
         });
         
-        // Запускаем звук при любом клике на странице
+        // Также пробуем при взаимодействии с страницей
         document.body.addEventListener('click', function() {
-            audio.play();
+            audio.play().then(function() {
+                statusText.innerHTML = "Звук воспроизводится ✅";
+                statusText.style.color = "#00ff00";
+            });
+        });
+        
+        document.body.addEventListener('touchstart', function() {
+            audio.play().then(function() {
+                statusText.innerHTML = "Звук воспроизводится ✅";
+                statusText.style.color = "#00ff00";
+            });
+        });
+        
+        // Пробуем при любом движении мыши
+        document.body.addEventListener('mousemove', function() {
+            audio.play().then(function() {
+                statusText.innerHTML = "Звук воспроизводится ✅";
+                statusText.style.color = "#00ff00";
+            });
         });
     </script>
 </body>
