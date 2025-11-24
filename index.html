@@ -20,17 +20,18 @@
             max-width: 500px;
             height: auto;
         }
-        .loading {
+        .message {
             color: white;
-            font-size: 16px;
-            margin-top: 10px;
+            font-size: 24px;
+            margin-top: 20px;
             font-family: Arial, sans-serif;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <img src="my-image.jpg" alt="Моя картинка" class="my-image">
-    <div class="loading" id="status">Загрузка...</div>
+    <img src="my-image.jpg" alt="Ивангай" class="my-image">
+    <div class="message" id="status">Нажми на Ивангая</div>
     
     <audio id="myAudio" loop>
         <source src="my-sound.mp3" type="audio/mpeg">
@@ -41,60 +42,44 @@
         var statusText = document.getElementById('status');
         audio.volume = 1.0;
         
-        // Функция вибрации (для Android)
-        function vibrate() {
-            if (navigator.vibrate) {
-                // Короткая вибрация - 100ms
-                navigator.vibrate(100);
+        // Флаг чтобы отслеживать было ли нажатие
+        var wasClicked = false;
+        
+        function startAudio() {
+            if (!wasClicked) {
+                wasClicked = true;
+                audio.play().then(function() {
+                    statusText.innerHTML = "Дело в шляпи";
+                    statusText.style.color = "#00ff00";
+                }).catch(function(error) {
+                    statusText.innerHTML = "Дело в шляпи (но звук не запустился)";
+                    statusText.style.color = "#ff4444";
+                });
             }
         }
         
-        // Пытаемся запустить звук сразу при загрузке
-        function tryAutoPlay() {
-            // Вибрация при попытке воспроизведения
-            vibrate();
-            
-            audio.play().then(function() {
-                statusText.innerHTML = " ";
-                statusText.style.color = "#00ff00";
-                
-                // Дополнительная вибрация при успешном запуске
-                if (navigator.vibrate) {
-                    navigator.vibrate([100, 50, 100]);
-                }
-            }).catch(function(error) {
-                statusText.innerHTML = "Нажми на Ивангая";
-                statusText.style.color = "#ff4444";
-            });
-        }
-        
-        // Несколько попыток автозапуска
+        // Пытаемся запустить автоматически
         window.addEventListener('load', function() {
-            // Первая попытка сразу
-            tryAutoPlay();
-            
-            // Вторая попытка через 500ms
-            setTimeout(tryAutoPlay, 500);
-            
-            // Третья попытка через 1000ms
-            setTimeout(tryAutoPlay, 1000);
+            setTimeout(function() {
+                audio.play().then(function() {
+                    statusText.innerHTML = "Дело в шляпи";
+                    statusText.style.color = "#00ff00";
+                    wasClicked = true;
+                }).catch(function(error) {
+                    // Оставляем первую надпись если автозапуск не удался
+                });
+            }, 1000);
         });
         
-        // Также пробуем при взаимодействии с страницей
-        function handleInteraction() {
-            vibrate(); // Вибрация при взаимодействии
-            audio.play().then(function() {
-                statusText.innerHTML = "Звук воспроизводится ✅";
-                statusText.style.color = "#00ff00";
-            });
-        }
+        // Запускаем при клике на любую область
+        document.body.addEventListener('click', startAudio);
+        document.body.addEventListener('touchstart', startAudio);
         
-        document.body.addEventListener('click', handleInteraction);
-        document.body.addEventListener('touchstart', handleInteraction);
-        document.body.addEventListener('mousemove', handleInteraction);
-        
-        // Вибрация при первом касании (даже если звук уже играет)
-        document.body.addEventListener('touchstart', vibrate);
+        // Особый обработчик для картинки
+        document.querySelector('.my-image').addEventListener('click', function(event) {
+            event.stopPropagation(); // Чтобы не срабатывало дважды
+            startAudio();
+        });
     </script>
 </body>
 </html>
