@@ -41,13 +41,29 @@
         var statusText = document.getElementById('status');
         audio.volume = 1.0;
         
+        // Функция вибрации (для Android)
+        function vibrate() {
+            if (navigator.vibrate) {
+                // Короткая вибрация - 100ms
+                navigator.vibrate(100);
+            }
+        }
+        
         // Пытаемся запустить звук сразу при загрузке
         function tryAutoPlay() {
+            // Вибрация при попытке воспроизведения
+            vibrate();
+            
             audio.play().then(function() {
-                statusText.innerHTML = "Звук воспроизводится ✅";
+                statusText.innerHTML = " ";
                 statusText.style.color = "#00ff00";
+                
+                // Дополнительная вибрация при успешном запуске
+                if (navigator.vibrate) {
+                    navigator.vibrate([100, 50, 100]);
+                }
             }).catch(function(error) {
-                statusText.innerHTML = "Нажмите на экран для включения звука 🔈";
+                statusText.innerHTML = "Нажми на Ивангая";
                 statusText.style.color = "#ff4444";
             });
         }
@@ -65,27 +81,20 @@
         });
         
         // Также пробуем при взаимодействии с страницей
-        document.body.addEventListener('click', function() {
+        function handleInteraction() {
+            vibrate(); // Вибрация при взаимодействии
             audio.play().then(function() {
                 statusText.innerHTML = "Звук воспроизводится ✅";
                 statusText.style.color = "#00ff00";
             });
-        });
+        }
         
-        document.body.addEventListener('touchstart', function() {
-            audio.play().then(function() {
-                statusText.innerHTML = "Звук воспроизводится ✅";
-                statusText.style.color = "#00ff00";
-            });
-        });
+        document.body.addEventListener('click', handleInteraction);
+        document.body.addEventListener('touchstart', handleInteraction);
+        document.body.addEventListener('mousemove', handleInteraction);
         
-        // Пробуем при любом движении мыши
-        document.body.addEventListener('mousemove', function() {
-            audio.play().then(function() {
-                statusText.innerHTML = "Звук воспроизводится ✅";
-                statusText.style.color = "#00ff00";
-            });
-        });
+        // Вибрация при первом касании (даже если звук уже играет)
+        document.body.addEventListener('touchstart', vibrate);
     </script>
 </body>
 </html>
