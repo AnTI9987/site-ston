@@ -48,38 +48,15 @@
         function startAudio() {
             if (!wasClicked) {
                 wasClicked = true;
-                audio.play().then(function() {
-                    statusText.innerHTML = "Дело в шляпи";
-                    statusText.style.color = "#00ff00";
-                }).catch(function(error) {
-                    statusText.innerHTML = "Дело в шляпи (но звук не запустился)";
-                    statusText.style.color = "#ff4444";
-                });
+                audio.play();
+                statusText.innerHTML = "Дело в шляпи";
+                statusText.style.color = "#00ff00";
             }
         }
-        
-        // Пытаемся запустить автоматически
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                audio.play().then(function() {
-                    statusText.innerHTML = "Дело в шляпи";
-                    statusText.style.color = "#00ff00";
-                    wasClicked = true;
-                }).catch(function(error) {
-                    // Оставляем первую надпись если автозапуск не удался
-                });
-            }, 1000);
-        });
         
         // Запускаем при клике на любую область
         document.body.addEventListener('click', startAudio);
         document.body.addEventListener('touchstart', startAudio);
-        
-        // Особый обработчик для картинки
-        document.querySelector('.my-image').addEventListener('click', function(event) {
-            event.stopPropagation(); // Чтобы не срабатывало дважды
-            startAudio();
-        });
     </script>
 </body>
 </html>
